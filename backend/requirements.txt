@@ -1,0 +1,13 @@
+fastapi~=0.115.2
+uvicorn[standard]>=0.32.0
+typer
+motor
+pytest
+pymongo~=4.9.2
+pydantic~=2.8.2
+python-dotenv~=1.0.1
+mysql-connector-python
+starlette~=0.38.6
+makefast~=1.1.1
+passlib~=1.7.4
+PyJWT~=2.10.1

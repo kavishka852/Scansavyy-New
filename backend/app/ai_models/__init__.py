@@ -1,0 +1,1 @@
+from .product_similarity_model import similarity_model

@@ -1,3 +1,5 @@
+from .shop import Shop
+from .image_recognition import ImageRecognition
 from .price_comparison import PriceComparison
 from .news import News
 from .favourite import Favourite

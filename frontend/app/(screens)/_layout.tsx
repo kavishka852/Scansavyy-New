@@ -1,4 +1,5 @@
 import {Stack} from 'expo-router';
+import ImageRecognition from "@/app/(screens)/imageRecognition";
 
 const RootLayout = () => {
     return (
@@ -22,6 +23,10 @@ const RootLayout = () => {
             <Stack.Screen name="discount" options={{headerShown: false}}/>
             <Stack.Screen name="purchaseHistory" options={{headerShown: false}}/>
             <Stack.Screen name="purchaseDetails" options={{headerShown: false}}/>
+            <Stack.Screen name="priceComparison" options={{headerShown: true, title: "Price Comparison"}}/>
+            <Stack.Screen name="imageRecognition" options={{headerShown: true, title: "Image Recognition"}}/>
+            <Stack.Screen name="relatedProducts" options={{headerShown: true, title: "Related Products"}}/>
+            <Stack.Screen name="shopDetails" options={{headerShown: true, title: "Shop Details"}}/>
         </Stack>
     );
 };

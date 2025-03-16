@@ -124,6 +124,11 @@ const HomeScreens = () => {
                         ].map((item, index) => (
                             <TouchableOpacity
                                 key={index}
+                                onPress={() => {
+                                    if (item.label == 'Instant Image Capture') {
+                                        router.push('/(screens)/imageRecognition');
+                                    }
+                                }}
                                 style={{
                                     width: '30%',
                                     alignItems: 'center',
@@ -202,6 +207,9 @@ const HomeScreens = () => {
 
                                     {/* Product Details */}
                                     <View style={styles.detailsContainer}>
+                                        <View style={styles.bottomContainer}>
+                                            <Text style={[styles.categoryText, {fontWeight: 600}]}>{item.shop_name}</Text>
+                                        </View>
                                         {/* Title */}
                                         <Text numberOfLines={2} style={styles.title}>
                                             {item.title}

@@ -1,3 +1,4 @@
+from .shop import Shop
 from .news import News
 from .favourite import Favourite
 from .payment import Payment

@@ -5,7 +5,7 @@ from datetime import datetime
 from typing_extensions import Annotated
 
 from app.dependencies.response_handler import ResponseHandler, get_response_handler
-from app.models import Payment, Product, Cart
+from app.models import Payment, Product, Cart, Notification
 from app.schemas import UserSchema, PaymentRequest
 from app.core.auth import Authenticate
 
@@ -78,6 +78,16 @@ class Checkout:
                     # Update the product quantity
                     await Product.update(product_object["product_id"], {
                         "qty": product_quantity,
+                    })
+
+                    # Add the notification
+                    await Notification.create(**{
+                        "user_id": ObjectId(current_user.id),
+                        "content": "Order has been placed!",
+                        "type": "mail",
+                        "transaction_id": payment_record["transaction_id"],
+                        "read": False,
+                        "created_at": datetime.utcnow(),
                     })
 
                     # Delete the cart item if exists

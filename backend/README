@@ -1,0 +1,9 @@
+How to run the Application
+
+1. Start the backend using - uvicorn main:app --port 8000 --reload
+
+2. Open the ngrok terminal and type - ngrok http 8000
+
+3. Copy the ngrok generated URL and paste it on frontend httpService.js file baseUrl
+
+4. Run the frontend app using - npx expo start

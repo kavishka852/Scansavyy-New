@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image, Alert, SafeAreaView, Platform } from 'react-native';
 import { router } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import BackgroundTriangles from '@/components/Scansavy_Prop/BackgroundTriangles';
 import HttpService from "@/utils/httpService";
-import {SECURE_STORAGE_KEYS, setSecureItem} from "@/utils/secureStoreUtils";
-
+import { SECURE_STORAGE_KEYS, setSecureItem } from "@/utils/secureStoreUtils";
 
 const Login = () => {
     const [passwordVisible, setPasswordVisible] = useState(false);
@@ -13,16 +12,6 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
-    /**
-     * Get started button onclick handler
-     * */
-    const handleGetStarted = () => {
-        router.push('/(screens)/(tabs)');
-    };
-
-    /**
-     * Login button onclick handler
-     * */
     const handleLogin = async () => {
         if (!email || !password) {
             Alert.alert('Error', 'Please fill in all fields');
@@ -31,27 +20,21 @@ const Login = () => {
 
         setLoading(true);
         try {
-            // Replace this with your actual API endpoint
             const response: LoginResponse = await HttpService.post('/api/login', {
                 email: email,
                 password: password,
             });
             const data: LoginData = response.data.data;
 
-            // Store the token if exists
             if (data.access_token) {
-                // Set the access token
                 await setSecureItem(SECURE_STORAGE_KEYS.ACCESS_TOKEN, data.access_token);
-                // Set the user data
                 await setSecureItem(SECURE_STORAGE_KEYS.USER_DATA, data.user_data);
 
-                Alert.alert('Success', 'User login successful');
+                Alert.alert('Success', 'Login Successful');
 
                 setTimeout(() => {
-                    // Navigate to the main app
                     router.push('/(screens)/(tabs)');
-                    return;
-                }, 1000)
+                }, 1000);
             }
         } catch (error) {
             if (error.status === 401) {
@@ -63,213 +46,225 @@ const Login = () => {
             setLoading(false);
         }
     };
-    
+
     return (
-        <View style={styles.container}>
-            {/* Animated Background Elements */}
-            <BackgroundTriangles />
-
-            {/* Title */}
-            <View style={styles.titleContainer}>
-                <Text style={styles.titleRow1}>Welcome</Text>
-                <Text style={styles.titleRow2}>Back!</Text>
-            </View>
-
-            {/* Email Input */}
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                keyboardType="email-address"
-                placeholderTextColor="#B0B0B0"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-            />
-
-            {/* Password Input with Show/Hide */}
-            <View style={styles.passwordContainer}>
-                <TextInput
-                    style={styles.passwordInput}
-                    placeholder="Password"
-                    secureTextEntry={!passwordVisible}
-                    placeholderTextColor="#B0B0B0"
-                    value={password}
-                    onChangeText={setPassword}
-                    autoCapitalize="none"
-                />
-                <TouchableOpacity
-                    style={styles.eyeIcon}
-                    onPress={() => setPasswordVisible(!passwordVisible)}
-                >
-                    <Icon
-                        name={passwordVisible ? 'eye-slash' : 'eye'}
-                        size={20}
-                        color="#B0B0B0"
+        <SafeAreaView style={styles.safeArea}>
+            <View style={styles.container}>
+                {/* Animated Background Elements */}
+                <BackgroundTriangles />
+                
+                {/* Logo and Title Container */}
+                <View style={styles.headerContainer}>
+                    <Image
+                        source={require('../../assets/Applogo.png')}
+                        style={styles.logo}
                     />
+                    <View style={styles.titleContainer}>
+                        <Text style={styles.titleRow1}>Welcome</Text>
+                        <Text style={styles.titleRow2}>To ScanSavvy!</Text>
+                    </View>
+                </View>
+
+                {/* Input Fields */}
+                <View style={styles.inputContainer}>
+                    {/* Email Input */}
+                    <View style={styles.inputWrapper}>
+                        <Icon 
+                            name="envelope" 
+                            size={20} 
+                            color="#B0B0B0" 
+                            style={styles.inputIcon} 
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Email Address"
+                            keyboardType="email-address"
+                            placeholderTextColor="#B0B0B0"
+                            value={email}
+                            onChangeText={setEmail}
+                            autoCapitalize="none"
+                        />
+                    </View>
+
+                    {/* Password Input */}
+                    <View style={styles.inputWrapper}>
+                        <Icon 
+                            name="lock" 
+                            size={20} 
+                            color="#B0B0B0" 
+                            style={styles.inputIcon} 
+                        />
+                        <TextInput
+                            style={styles.input}
+                            placeholder="Password"
+                            secureTextEntry={!passwordVisible}
+                            placeholderTextColor="#B0B0B0"
+                            value={password}
+                            onChangeText={setPassword}
+                            autoCapitalize="none"
+                        />
+                        <TouchableOpacity
+                            style={styles.eyeIcon}
+                            onPress={() => setPasswordVisible(!passwordVisible)}
+                        >
+                            <Icon
+                                name={passwordVisible ? 'eye-slash' : 'eye'}
+                                size={20}
+                                color="#B0B0B0"
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                    {/* Forgot Password Link */}
+                    <TouchableOpacity 
+                        style={styles.forgotPasswordContainer}
+                        onPress={() => router.push('/(screens)/ForgotPassword')}
+                    >
+                        {/* <Text style={styles.forgotPasswordText}>Forgot Password?</Text> */}
+                    </TouchableOpacity>
+                </View>
+
+                {/* Login Button */}
+                <TouchableOpacity
+                    style={[styles.loginButton, loading && styles.buttonDisabled]}
+                    onPress={handleLogin}
+                    disabled={loading}
+                >
+                    <Text style={styles.loginButtonText}>
+                        {loading ? 'Logging in...' : 'Login'}
+                    </Text>
                 </TouchableOpacity>
+
+                {/* Sign Up Link */}
+                <View style={styles.signupContainer}>
+                    <Text style={styles.signupText}>Don't have an account? </Text>
+                    <TouchableOpacity onPress={() => router.push('/(screens)/Signup')}>
+                        <Text style={styles.signupLinkText}>Sign Up</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-
-            {/* Login Button */}
-            <TouchableOpacity
-                style={[styles.button, loading && styles.buttonDisabled]}
-                onPress={handleLogin}
-                disabled={loading}
-            >
-                <Text style={styles.buttonText}>
-                    {loading ? 'Logging in...' : 'Login'}
-                </Text>
-            </TouchableOpacity>
-
-            <Text style={{ marginTop: 14 }}>- OR Continue With -</Text>
-
-            {/* Social Login Buttons */}
-            <View style={styles.socialContainer}>
-                <TouchableOpacity style={[styles.socialButton, styles.googleButton]}>
-                    <Image source={require('../../assets/google-icon.png')} style={styles.socialIcon} />
-                    <Text style={styles.socialText}>Login with Google</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.socialButton, styles.facebookButton]}>
-                    <Image source={require('../../assets/facebook-icon.png')} style={styles.socialIcon} />
-                    <Text style={styles.socialText}>Login with Facebook</Text>
-                </TouchableOpacity>
-            </View>
-
-            <Text style={styles.link} onPress={() => router.push('/(screens)/Signup')}>
-                Don’t have an account? Sign up
-            </Text>
-        </View>
+        </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#0391FA',
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#0391FA',
+        paddingHorizontal: 20,
+    },
+    headerContainer: {
+        alignItems: 'center',
+        marginBottom: 30,
+    },
+    logo: {
+        width: 120,
+        height: 120,
+        resizeMode: 'contain',
+        marginBottom: 20,
     },
     titleContainer: {
-        marginBottom: 40,
-        alignItems: 'stretch',
+        alignItems: 'center',
     },
     titleRow1: {
-        fontSize: 50,
-        fontWeight: 'bold',
+        fontSize: 36,
+        fontWeight: '700',
         color: '#fff',
         textShadowColor: 'rgba(0, 0, 0, 0.2)',
-        textShadowOffset: { width: 3, height: 3 },
-        textShadowRadius: 5,
-        fontFamily: 'sans-serif',
+        textShadowOffset: { width: 2, height: 2 },
+        textShadowRadius: 4,
     },
     titleRow2: {
-        fontSize: 50,
-        fontWeight: 'bold',
+        fontSize: 36,
+        fontWeight: '700',
         color: '#fff',
         textShadowColor: 'rgba(0, 0, 0, 0.2)',
-        textShadowOffset: { width: 3, height: 3 },
-        textShadowRadius: 5,
-        fontFamily: 'sans-serif',
+        textShadowOffset: { width: 2, height: 2 },
+        textShadowRadius: 4,
     },
-
-    input: {
-        width: '80%',
-        borderWidth: 1,
-        borderColor: '#B0B0B0',
-        borderRadius: 12,
+    inputContainer: {
+        width: '100%',
         marginBottom: 20,
-        paddingHorizontal: 15,
-        paddingVertical: 12,
-        fontSize: 16,
-        backgroundColor: '#fff',
-        elevation: 3,
     },
-    passwordContainer: {
-        width: '80%',
+    inputWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#B0B0B0',
-        borderRadius: 12,
-        marginBottom: 20,
         backgroundColor: '#fff',
+        borderRadius: 12,
+        marginBottom: 15,
         elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
     },
-    passwordInput: {
-        flex: 1,
+    inputIcon: {
         paddingHorizontal: 15,
+    },
+    input: {
+        flex: 1,
         paddingVertical: 12,
         fontSize: 16,
+        color: '#333',
     },
     eyeIcon: {
-        paddingHorizontal: 10,
+        paddingHorizontal: 15,
     },
-    button: {
+    forgotPasswordContainer: {
+        alignSelf: 'flex-end',
+        marginBottom: 20,
+    },
+    forgotPasswordText: {
+        color: '#fff',
+        fontSize: 14,
+        textDecorationLine: 'underline',
+    },
+    loginButton: {
         backgroundColor: '#6200EE',
         padding: 15,
-        borderRadius: 10,
-        marginTop: 20,
-        width: '80%',
+        borderRadius: 12,
+        width: '100%',
+        alignItems: 'center',
+        marginBottom: 20,
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.2,
+                shadowRadius: 4,
+            },
+            android: {
+                elevation: 5,
+            },
+        }),
     },
-    buttonText: {
+    loginButtonText: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
-        textAlign: 'center',
     },
-    socialContainer: {
-        marginTop: 20,
-        width: '80%',
-    },
-    socialButton: {
+    signupContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
-        padding: 15,
-        borderRadius: 10,
-        marginBottom: 15,
         justifyContent: 'center',
+        alignItems: 'center',
     },
-    googleButton: {
-        backgroundColor: '#DB4437',
-    },
-    facebookButton: {
-        backgroundColor: '#4267B2',
-    },
-    socialIcon: {
-        width: 24,
-        height: 24,
-        marginRight: 10,
-    },
-    socialText: {
+    signupText: {
         color: '#fff',
         fontSize: 16,
-        fontWeight: 'bold',
     },
-    link: {
+    signupLinkText: {
         color: '#6200EE',
-        marginTop: 15,
         fontSize: 16,
-        zIndex: 1,
+        fontWeight: 'bold',
     },
     buttonDisabled: {
         backgroundColor: '#A0A0A0',
     },
 });
-
-type UserData = {
-    email: string,
-    username: string,
-    name: string
-}
-
-type LoginData = {
-    access_token: string,
-    user_data: UserData
-}
-
-type LoginResponse = {
-    success: boolean;
-    message?: string;
-    data: any;
-};
 
 export default Login;

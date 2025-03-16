@@ -63,7 +63,10 @@ class Notification:
                 )
 
             return response_handler.send_success_response(
-                message="Notification marked as read successfully"
+                message="Notification marked as read successfully",
+                data={
+                    "transaction_id": result["transaction_id"],
+                }
             )
         except Exception as e:
             print(e)

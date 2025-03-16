@@ -8,7 +8,7 @@ class HttpService {
      */
     static api() {
         const api = axios.create({
-            baseURL: "https://36c5-2402-4000-b1c2-b100-510b-306f-c4eb-7a0c.ngrok-free.app",
+            baseURL: "https://6fae-112-135-76-151.ngrok-free.app",
         });
 
         // Response interceptor

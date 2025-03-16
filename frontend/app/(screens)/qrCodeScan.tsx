@@ -1,0 +1,57 @@
+import React, {useRef} from 'react';
+import {SafeAreaView, StyleSheet, AppState, Platform, StatusBar, View} from "react-native";
+import {Stack, useRouter} from "expo-router";
+import {CameraView} from "expo-camera";
+
+const QrCodeScan = () => {
+    const router = useRouter();
+    const qrLock = useRef(false);
+    const appState = useRef(AppState.currentState);
+
+    return (
+        <SafeAreaView style={StyleSheet.absoluteFillObject}>
+            <Stack.Screen
+                title="QR Code Scan"
+                options={{headerShown: false}}
+            />
+            {Platform.OS === "android" ? <StatusBar hidden /> : null}
+            <CameraView
+                style={[StyleSheet.absoluteFillObject, {width: '100%', height: '100%'}]}
+                facing="back"
+                onBarcodeScanned={({ data }) => {
+                    if (data && !qrLock.current) {
+                        qrLock.current = true;
+                        setTimeout(async () => {
+                            router.push(`/(screens)/priceComparison?productId=${data}`);
+                        }, 500);
+                    }
+                }}
+            />
+            {/* Overlay Component */}
+            <View style={styles.overlay}>
+                <View style={styles.scanBox} />
+            </View>
+        </SafeAreaView>
+    );
+};
+
+const styles = StyleSheet.create({
+    overlay: {
+        ...StyleSheet.absoluteFillObject,
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    scanBox: {
+        width: 250, // Adjust size
+        height: 250, // Adjust size
+        borderColor: '#ffffff',
+        borderWidth: 4,
+        backgroundColor: 'transparent',
+    },
+});
+
+
+export default QrCodeScan;

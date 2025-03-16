@@ -12,8 +12,10 @@ import HttpService from "@/utils/httpService";
 import {formattedDate} from "@/utils/common";
 import {MainLayoutContext} from "@/providers/main-provider";
 import Loading from "@/components/Loading";
+import {useRouter} from "expo-router";
 
 const MessageScreen = () => {
+    const router = useRouter();
     const {setNotificationCount} = useContext(MainLayoutContext);
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
@@ -58,6 +60,7 @@ const MessageScreen = () => {
                         notification.id === id ? {...notification, read: true} : notification
                     )
                 );
+                router.push(`/purchaseDetails?payment_id=${response.data.data.transaction_id}`);
             }
         } catch (error) {
             Alert.alert('Error', 'Unable to connect to the server. Please try again later.');

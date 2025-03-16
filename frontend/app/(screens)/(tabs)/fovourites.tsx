@@ -133,6 +133,9 @@ const FavouritesScreen = () => {
 
                             {/* Product Details */}
                             <View style={styles.detailsContainer}>
+                                <View style={styles.bottomContainer}>
+                                    <Text style={[styles.categoryText, {fontWeight: 600}]}>{item.shop_name}</Text>
+                                </View>
                                 {/* Title */}
                                 <Text numberOfLines={2} style={styles.title} onPress={() => router.push(`/(screens)/productDetails?product=${item.product_id}`)}>
                                     {item.name}

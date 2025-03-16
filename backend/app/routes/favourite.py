@@ -15,13 +15,13 @@ class Favourite:
     @staticmethod
     @router.get("/favourites", response_model=Dict[str, Any])
     async def index(
-            current_user: Annotated[UserSchema, Depends(Authenticate.get_current_user)],
-            response_handler: ResponseHandler = Depends(get_response_handler)
+        current_user: Annotated[UserSchema, Depends(Authenticate.get_current_user)],
+        response_handler: ResponseHandler = Depends(get_response_handler)
     ):
         # Convert user_id to ObjectId for querying MongoDB
         user_id = ObjectId(current_user.id)
 
-        # Create an aggregation pipeline to join favourites with products
+        # Create an aggregation pipeline to join favourites with products and shops
         pipeline = [
             {"$match": {"user_id": user_id}},
             {"$lookup": {
@@ -31,6 +31,13 @@ class Favourite:
                 "as": "product"
             }},
             {"$unwind": "$product"},
+            {"$lookup": {
+                "from": "shops",
+                "localField": "product.shop_id",
+                "foreignField": "_id",
+                "as": "shop"
+            }},
+            {"$unwind": "$shop"},
             {"$project": {
                 "_id": {"$toString": "$_id"},
                 "user_id": {"$toString": "$user_id"},
@@ -42,6 +49,10 @@ class Favourite:
                 "qty": "$product.qty",
                 "original_price": "$product.original_price",
                 "images": "$product.images",
+                "shop_name": "$shop.name",
+                "shop_id": {"$toString": "$shop._id"},
+                "shop_logo": "$shop.logo",
+                "shop_rating": "$shop.rating"
             }}
         ]
 
@@ -49,7 +60,7 @@ class Favourite:
         favourites = await FavouriteModel.aggregate(pipeline)
 
         return response_handler.send_success_response(
-            message="Favourites with product details retrieved successfully",
+            message="Favourites with product and shop details retrieved successfully",
             data=favourites
         )
 

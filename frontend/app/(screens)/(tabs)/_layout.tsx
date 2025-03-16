@@ -25,19 +25,9 @@ import PurchaseHistorScreen from '../purchaseHistory';
 import {getSecureItem, SECURE_STORAGE_KEYS} from "@/utils/secureStoreUtils";
 import HttpService from "@/utils/httpService";
 import {MainLayoutContext} from "@/providers/main-provider";
-
-// Menu drower
-const DrawerNavigator = () => {
-    const Drawer = createDrawerNavigator();
-
-    return (
-        <Drawer.Navigator screenOptions={{headerShown: false}}>
-            <Drawer.Screen name="Home" component={TabRootLayout}/>
-            <Drawer.Screen name="wishLists" component={WishListScreen}/>
-            <Drawer.Screen name="Signup" component={Signup}/>
-        </Drawer.Navigator>
-    );
-};
+import {useCameraPermissions} from "expo-camera";
+import PriceComparison from "@/app/(screens)/priceComparison";
+import Shops from "@/app/(screens)/shops";
 
 // Custom Drawer Navigator
 const CustomDrawerContent = (props: any) => {
@@ -96,7 +86,6 @@ const CustomDrawerContent = (props: any) => {
                             props.state.routes.map((route: any, index: any) => {
                                 const {drawerIcon, drawerLabel} = props.descriptors[route.key].options;
                                 const focused = index === props.state.index;
-                                //console.warn(route.name)
                                 return (
                                     <TouchableOpacity
                                         key={route.key}
@@ -143,10 +132,12 @@ const CustomDrawerContent = (props: any) => {
 }
 
 const TabRootLayout = () => {
+    const [permission, requestPermission] = useCameraPermissions();
     const router = useRouter();
     const {notificationCount, setNotificationCount, cartCount,  setCartCount} = useContext(MainLayoutContext);
     const heightHeader = Constants.statusBarHeight + 55;
     const translation = useRef(new Animated.Value(0)).current;
+    const [isPermissionGranted, setIsPermissionGranted] = useState<boolean>(false);
 
     useEffect(() => {
         // Retrieve notifications count
@@ -183,6 +174,17 @@ const TabRootLayout = () => {
             }
         } catch (error) {
             Alert.alert('Error', 'Unable to connect to the server. Please try again later.');
+        }
+    }
+
+    /**
+     * QR code button onclick handler
+     * */
+    const QRCodeOnClickHandler = async () => {
+        const permissionStatus = await requestPermission();
+        setIsPermissionGranted(permissionStatus?.granted);
+        if (permissionStatus?.granted) {
+            router.push('/(screens)/qrCodeScan');
         }
     }
 
@@ -241,6 +243,45 @@ const TabRootLayout = () => {
         );
     }
 
+    /**
+     * Render the main header component
+     * */
+    const MainHeader = ({navigation}: {navigation: any}) => {
+        return (
+            <View style={{
+                width: '100%',
+                height: heightHeader,
+                backgroundColor: "#1E90FF",
+                paddingTop: Constants.statusBarHeight
+            }}>
+                <View style={styles.headerTop}>
+                    <View>
+                        <View style={styles.headerContent}>
+                            <TouchableOpacity
+                                onPress={({}) => navigation.dispatch(DrawerActions.openDrawer())}>
+                                <Ionicons name="filter" size={30} color="white"/>
+                            </TouchableOpacity>
+                            <View style={{
+                                flexShrink: 1,
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}>
+                                <Text style={[styles.headerTitle, {
+                                    fontFamily: "Montserrat",
+                                    fontWeight: 'bold',
+                                    fontSize: 30,
+                                    marginLeft: 9
+                                }]}>ScanSavvy</Text>
+                            </View>
+                            <CartComponent/>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
     return (
         <>
             <Tabs
@@ -267,179 +308,7 @@ const TabRootLayout = () => {
                     },
                     header: ({navigation, route, options}) => {
                         const title = getHeaderTitle(options, route.name);
-                        if (title === "Home") {
-                            return <>
-                                <View style={{
-                                    width: '100%',
-                                    height: heightHeader,
-                                    backgroundColor: "#1E90FF",
-                                    paddingTop: Constants.statusBarHeight
-                                }}>
-                                    <View style={styles.headerTop}>
-                                        <View>
-                                            <View style={styles.headerContent}>
-                                                <TouchableOpacity
-                                                    onPress={({}) => navigation.dispatch(DrawerActions.openDrawer())}>
-                                                    <Ionicons name="filter" size={30} color="white"/>
-                                                </TouchableOpacity>
-                                                <View style={{
-                                                    flexShrink: 1,
-                                                    flex: 1,
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center'
-                                                }}>
-                                                    <Text style={[styles.headerTitle, {
-                                                        fontFamily: "Montserrat",
-                                                        fontWeight: 'bold',
-                                                        fontSize: 30,
-                                                        marginLeft: 9
-                                                    }]}>ScanSavvy</Text>
-                                                </View>
-                                                <CartComponent/>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </>
-                        } else if (title === "Favourites") {
-                            return <>
-                                <View style={{
-                                    width: '100%',
-                                    height: heightHeader,
-                                    backgroundColor: "#1E90FF",
-                                    paddingTop: Constants.statusBarHeight
-                                }}>
-                                    <View style={styles.headerTop}>
-                                        <View>
-                                            <View style={styles.headerContent}>
-                                                <TouchableOpacity
-                                                    onPress={({}) => navigation.dispatch(DrawerActions.openDrawer())}>
-                                                    <Ionicons name="filter" size={30} color="white"/>
-                                                </TouchableOpacity>
-                                                <View style={{
-                                                    flexShrink: 1,
-                                                    flex: 1,
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center'
-                                                }}>
-                                                    <Text style={[styles.headerTitle, {
-                                                        fontFamily: "Montserrat",
-                                                        fontWeight: 'bold',
-                                                        fontSize: 30,
-                                                        marginLeft: 9
-                                                    }]}>ScanSavvy</Text>
-                                                </View>
-                                                <CartComponent/>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </>
-                        } else if (title === "Notifications") {
-                            return <>
-                                <View style={{
-                                    width: '100%',
-                                    height: heightHeader,
-                                    backgroundColor: "#1E90FF",
-                                    paddingTop: Constants.statusBarHeight
-                                }}>
-                                    <View style={styles.headerTop}>
-                                        <View>
-                                            <View style={styles.headerContent}>
-                                                <TouchableOpacity
-                                                    onPress={({}) => navigation.dispatch(DrawerActions.openDrawer())}>
-                                                    <Ionicons name="filter" size={30} color="white"/>
-                                                </TouchableOpacity>
-                                                <View style={{
-                                                    flexShrink: 1,
-                                                    flex: 1,
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center'
-                                                }}>
-                                                    <Text style={[styles.headerTitle, {
-                                                        fontFamily: "Montserrat",
-                                                        fontWeight: 'bold',
-                                                        fontSize: 30,
-                                                        marginLeft: 9
-                                                    }]}>ScanSavvy</Text>
-                                                </View>
-                                                <CartComponent/>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </>
-                        } else if (title === "Settings") {
-                            return <>
-                                <View style={{
-                                    width: '100%',
-                                    height: heightHeader,
-                                    backgroundColor: "#1E90FF",
-                                    paddingTop: Constants.statusBarHeight
-                                }}>
-                                    <View style={styles.headerTop}>
-                                        <View>
-                                            <View style={styles.headerContent}>
-                                                <TouchableOpacity
-                                                    onPress={({}) => navigation.dispatch(DrawerActions.openDrawer())}>
-                                                    <Ionicons name="filter" size={30} color="white"/>
-                                                </TouchableOpacity>
-                                                <View style={{
-                                                    flexShrink: 1,
-                                                    flex: 1,
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center'
-                                                }}>
-                                                    <Text style={[styles.headerTitle, {
-                                                        fontFamily: "Montserrat",
-                                                        fontWeight: 'bold',
-                                                        fontSize: 30,
-                                                        marginLeft: 9
-                                                    }]}>ScanSavvy</Text>
-                                                </View>
-                                                <CartComponent/>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </>
-                        } else if (title === "purchasehistory") {
-                            return <>
-                                <View style={{
-                                    width: '100%',
-                                    height: heightHeader,
-                                    backgroundColor: "#1E90FF",
-                                    paddingTop: Constants.statusBarHeight
-                                }}>
-                                    <View style={styles.headerTop}>
-                                        <View>
-                                            <View style={styles.headerContent}>
-                                                <TouchableOpacity
-                                                    onPress={({}) => navigation.dispatch(DrawerActions.openDrawer())}>
-                                                    <Ionicons name="filter" size={30} color="white"/>
-                                                </TouchableOpacity>
-                                                <View style={{
-                                                    flexShrink: 1,
-                                                    flex: 1,
-                                                    justifyContent: 'center',
-                                                    alignItems: 'center'
-                                                }}>
-                                                    <Text style={[styles.headerTitle, {
-                                                        fontFamily: "Montserrat",
-                                                        fontWeight: 'bold',
-                                                        fontSize: 30,
-                                                        marginLeft: 9
-                                                    }]}>ScanSavvy</Text>
-                                                </View>
-                                                <CartComponent/>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </View>
-                            </>
-                        } else {
-                            return null;
-                        }
+                        return <MainHeader navigation={navigation}/>;
                     }
                 }}
             >
@@ -447,7 +316,6 @@ const TabRootLayout = () => {
                     name="index"
                     options={{
                         title: 'Home',
-                        // headerStyle: styles.headerStyle,
                         tabBarIcon: ({color}) => (
                             <MaterialCommunityIcons name="home" size={28} color={color}/>
                         ),
@@ -467,7 +335,7 @@ const TabRootLayout = () => {
                     options={{
                         tabBarIcon: () => (
                             <Pressable
-                                onPress={() => console.log('QR Code Pressed')}
+                                onPress={() => QRCodeOnClickHandler()}
                                 style={({pressed}) => [
                                     styles.qrCodeButton,
                                     {transform: [{scale: pressed ? 0.9 : 1}]},
@@ -488,7 +356,7 @@ const TabRootLayout = () => {
                                 ></Animated.View>
                             </Pressable>
                         ),
-                        tabBarLabel: () => null, // Hide label for QR Code
+                        tabBarLabel: () => null,
                         tabBarItemStyle: {height: 0},
                     }}
                 />
@@ -573,9 +441,9 @@ const MyDrawerApp = () => {
                            }}
             />
 
-            <Drawer.Screen name="collections" component={CollectionScreen}
+            <Drawer.Screen name="Shops" component={Shops}
                            options={{
-                               headerShown: false,
+                               headerShown: true,
                                drawerIcon: ({focused, color, size}) => {
                                    return (
                                        <View style={{
@@ -583,7 +451,7 @@ const MyDrawerApp = () => {
                                            borderRadius: 8,
                                            padding: 2
                                        }}>
-                                           <MaterialIcons name="collections" size={size} color={color}/>
+                                           <MaterialIcons name="shop" size={size} color={color}/>
                                        </View>
                                    )
                                },
@@ -602,7 +470,7 @@ const MyDrawerApp = () => {
                                                    fontSize: 16,
                                                    fontWeight: 500,
                                                    paddingLeft: 10
-                                               }}>Collections</Text>
+                                               }}>Shops</Text>
                                                <Entypo name="chevron-right" size={16} color={color}/>
                                            </View>
                                        </View>
@@ -750,30 +618,6 @@ const MyDrawerApp = () => {
                                }
                            }}
             />
-
-
-            {/* <Drawer.Screen name="RecentlyViewed" component={ProductDetailsScreen}
-        options={{
-          drawerIcon: ({ focused, color, size }) => {
-            return (
-              <View style={{ backgroundColor: focused ? "green" : "#fff", borderRadius: 8, padding: 2 }}>
-                <Ionicons name="eye" size={size} color={color} />
-              </View>
-            )
-          },
-          drawerLabel: ({ focused, color }) => {
-            return (
-              <View style={{ flex: 1 }}>
-                <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Text style={{ flex: 1, color: focused ? "green" : color, fontSize: 16, fontWeight: 500, paddingLeft: 10 }}>Recently Viewed</Text>
-                  <Entypo name="chevron-right" size={16} color={color} />
-                </View>
-              </View>
-            )
-          }
-        }}
-      /> */}
-
 
             <Drawer.Screen name="userAcoount" component={MyProfileScreen}
                            options={{

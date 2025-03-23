@@ -8,6 +8,7 @@ class UserSchema(BaseModel):
     name: str
     email: str
     password: str
+    first_login: bool
     username: Optional[str] = None
     verified: Optional[bool] = None
     status: Optional[int] = None
@@ -21,6 +22,7 @@ class UserLoginRequest(BaseModel):
 
 
 class ProfileUpdateRequest(BaseModel):
-    name: str
-    email: str
+    name: Optional[str] = None
+    email: Optional[str] = None
     password: Optional[str] = None
+    first_login: Optional[bool] = False

@@ -13,6 +13,7 @@ import {FontAwesome} from "@expo/vector-icons";
 import {useAuthorization} from "@/hooks/useAuthorization";
 import HttpService from "@/utils/httpService";
 import Loading from "@/components/Loading";
+import ProductStock from "@/components/ProductStock";
 
 const RelatedProducts = () => {
     const {checkAccess} = useAuthorization();
@@ -88,10 +89,12 @@ const RelatedProducts = () => {
                                     {/* Product Details */}
                                     <View style={styles.detailsContainer}>
                                         <View style={styles.bottomContainer}>
-                                            <Text style={[styles.categoryText, {fontWeight: 600}]}>{item.shop.name}</Text>
+                                            <Text
+                                                style={[styles.categoryText, {fontWeight: 600}]}>{item.shop.name}</Text>
                                         </View>
                                         {/* Title */}
-                                        <Text numberOfLines={2} style={styles.title} onPress={() => router.push(`/(screens)/productDetails?product=${item._id}`)}>
+                                        <Text numberOfLines={2} style={styles.title}
+                                              onPress={() => router.push(`/(screens)/productDetails?product=${item._id}`)}>
                                             {item.title}
                                         </Text>
 
@@ -99,7 +102,8 @@ const RelatedProducts = () => {
                                         <View style={styles.priceRatingContainer}>
                                             <View style={styles.priceContainer}>
                                                 <Text style={styles.currentPrice}>LKR {priceFormat(item.price)}</Text>
-                                                <Text style={styles.originalPrice}>LKR {priceFormat(item.original_price)}</Text>
+                                                <Text
+                                                    style={styles.originalPrice}>LKR {priceFormat(item.original_price)}</Text>
                                             </View>
 
                                             <View style={styles.ratingContainer}>
@@ -109,10 +113,7 @@ const RelatedProducts = () => {
                                         </View>
 
                                         {/* Category and Stock */}
-                                        <View style={styles.bottomContainer}>
-                                            <Text style={styles.categoryText}>{item.category}</Text>
-                                            <Text style={item.qty > 0 ? styles.InStockText : styles.OutOfStockText}>{item.qty > 0 ? "In Stock" : "Out Of Stock"}</Text>
-                                        </View>
+                                        <ProductStock quantity={item.qty}/>
                                     </View>
                                 </View>
                             </View>
@@ -269,6 +270,11 @@ const styles = StyleSheet.create({
     OutOfStockText: {
         fontSize: 14,
         color: '#ff0000',
+        fontWeight: '500',
+    },
+    LowStockText: {
+        fontSize: 14,
+        color: '#e15e00',
         fontWeight: '500',
     },
     clearButton: {

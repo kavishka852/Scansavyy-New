@@ -27,6 +27,7 @@ const RootLayout = () => {
             <Stack.Screen name="imageRecognition" options={{headerShown: true, title: "Image Recognition"}}/>
             <Stack.Screen name="relatedProducts" options={{headerShown: true, title: "Related Products"}}/>
             <Stack.Screen name="shopDetails" options={{headerShown: true, title: "Shop Details"}}/>
+            <Stack.Screen name="shops" options={{headerShown: true, title: "Shops"}}/>
         </Stack>
     );
 };

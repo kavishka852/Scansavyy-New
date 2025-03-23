@@ -13,12 +13,17 @@ import {FontAwesome} from "@expo/vector-icons";
 import {useAuthorization} from "@/hooks/useAuthorization";
 import Loading from "@/components/Loading";
 import HttpService from "@/utils/httpService";
+import ProductStock from "@/components/ProductStock";
+import CategoryList from "@/components/CategoryList";
 
 const ShopDetails = () => {
     const {checkAccess} = useAuthorization();
     const {id} = useLocalSearchParams();
     const [productLoading, setProductLoading] = useState<boolean>(true);
     const [products, setProducts] = useState<any>([]);
+    const [categories, setCategories] = useState<string[]>([]);
+    const [firstLoad, setFirstLoad] = useState<boolean>(true);
+    const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
     /**
      * Initial data load
@@ -28,19 +33,38 @@ const ShopDetails = () => {
         checkAccess();
         // Fetch the product data when the component mounts
         fetchData();
+        setFirstLoad(false);
     }, []);
+
+    // Add this function to handle category selection
+    const handleCategorySelect = (category: string) => {
+        console.log(category)
+        setSelectedCategory(category);
+        fetchData(category);
+    };
 
     /**
      * Fetch the product data
      * */
-    const fetchData = async () => {
+    const fetchData = async (category: string = null) => {
         try {
+            let url = `/api/product/list?shop_id=${id}`;
+            if (category && category !== 'all') {
+                url += `&category=${category}`;
+            }
             // Retrieve the product data
-            const response = await HttpService.get(`/api/product/list?shop_id=${id}`);
+            const response = await HttpService.get(url);
             if (response.data.success) {
                 setProducts(response.data.data);
+
+                // Extract unique categories from products
+                if (firstLoad) {
+                    const uniqueCategories = [...new Set(response.data.data.map((product: any) => product.category))];
+                    setCategories(uniqueCategories);
+                }
             }
         } catch (error) {
+            console.log(error)
             Alert.alert('Error', 'Unable to connect to the server. Please try again later.');
         } finally {
             setProductLoading(false);
@@ -66,6 +90,19 @@ const ShopDetails = () => {
                             fontSize: 22,
                             marginRight: 'auto',
                         }}>{products.length != 0 && products[0].shop_name}</Text>
+                    </View>
+                    <View style={{
+                        marginTop: 20,
+                        marginBottom: 10,
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }}>
+                        <CategoryList
+                            categories={categories}
+                            selectedCategory={selectedCategory}
+                            onSelectCategory={handleCategorySelect}
+                        />
                     </View>
                     <View style={{
                         width: '100%',
@@ -110,7 +147,8 @@ const ShopDetails = () => {
                                     {/* Product Details */}
                                     <View style={styles.detailsContainer}>
                                         {/* Title */}
-                                        <Text numberOfLines={2} style={styles.title} onPress={() => router.push(`/(screens)/productDetails?product=${item._id}`)}>
+                                        <Text numberOfLines={2} style={styles.title}
+                                              onPress={() => router.push(`/(screens)/productDetails?product=${item._id}`)}>
                                             {item.title}
                                         </Text>
 
@@ -118,7 +156,8 @@ const ShopDetails = () => {
                                         <View style={styles.priceRatingContainer}>
                                             <View style={styles.priceContainer}>
                                                 <Text style={styles.currentPrice}>LKR {priceFormat(item.price)}</Text>
-                                                <Text style={styles.originalPrice}>LKR {priceFormat(item.original_price)}</Text>
+                                                <Text
+                                                    style={styles.originalPrice}>LKR {priceFormat(item.original_price)}</Text>
                                             </View>
 
                                             <View style={styles.ratingContainer}>
@@ -130,7 +169,7 @@ const ShopDetails = () => {
                                         {/* Category and Stock */}
                                         <View style={styles.bottomContainer}>
                                             <Text style={styles.categoryText}>{item.category}</Text>
-                                            <Text style={item.qty > 0 ? styles.InStockText : styles.OutOfStockText}>{item.qty > 0 ? "In Stock" : "Out Of Stock"}</Text>
+                                            <ProductStock quantity={item.qty}/>
                                         </View>
                                     </View>
                                 </View>

@@ -33,7 +33,7 @@ const Onboarding = () => {
   };
 
   const handleGetStarted = () => {
-    router.push('/(screens)/Login');
+    router.push('/(screens)/(tabs)');
   };
 
   const animateContent = () => {

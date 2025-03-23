@@ -12,6 +12,7 @@ import {Stack, useRouter} from "expo-router";
 import {CameraView, Camera} from "expo-camera";
 import * as MediaLibrary from 'expo-media-library';
 import HttpService from "@/utils/httpService";
+import {FontAwesome5} from "@expo/vector-icons";
 
 const ImageRecognition = () => {
     const router = useRouter();
@@ -99,6 +100,18 @@ const ImageRecognition = () => {
             />
             {Platform.OS === "android" ? <StatusBar hidden /> : null}
             <CameraView style={styles.container} ref={cameraRef}>
+                <TouchableOpacity style={{
+                    position: 'absolute',
+                    bottom: 80,
+                    left: 20,
+                    width: 80,
+                    height: 80,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }} onPress={() => router.push('/(screens)/(tabs)')}>
+                    <FontAwesome5 name="arrow-left" size={30} color="#ffffff"/>
+                </TouchableOpacity>
                 <TouchableOpacity style={{
                     position: 'absolute',
                     bottom: 80,

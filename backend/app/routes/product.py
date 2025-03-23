@@ -15,6 +15,7 @@ class Product:
     async def index(
         category: Optional[str] = None,
         shop_id: Optional[str] = None,
+        min_rating: Optional[int] = None,
         limit: Optional[int] = None,
         response_handler: ResponseHandler = Depends(get_response_handler)
     ):
@@ -24,6 +25,7 @@ class Product:
         Args:
            :param category: Product category
            :param shop_id: Shop id
+           :param min_rating: Ratings of the product
            :param limit: Product limit
            :param response_handler: Return response handler
 
@@ -36,6 +38,8 @@ class Product:
                 filters["category"] = category
             if shop_id:
                 filters["shop_id"] = ObjectId(shop_id)
+            if min_rating:
+                filters["ratings"] = {"$gte": min_rating}
 
             # Get the products from the database
             products = await ProductModel.get(filters, limit)

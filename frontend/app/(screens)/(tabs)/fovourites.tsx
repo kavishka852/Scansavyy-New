@@ -13,6 +13,7 @@ import {AntDesign, FontAwesome} from "@expo/vector-icons";
 import {useAuthorization} from "@/hooks/useAuthorization";
 import HttpService from "@/utils/httpService";
 import Loading from "@/components/Loading";
+import ProductStock from "@/components/ProductStock";
 
 const FavouritesScreen = () => {
     const {checkAccess} = useAuthorization();
@@ -157,8 +158,7 @@ const FavouritesScreen = () => {
                                 {/* Category and Stock */}
                                 <View style={styles.bottomContainer}>
                                     <Text style={styles.categoryText}>{item.category}</Text>
-                                    <Text
-                                        style={item.qty > 0 ? styles.InStockText : styles.OutOfStockText}>{item.qty > 0 ? "In Stock" : "Out Of Stock"}</Text>
+                                    <ProductStock quantity={item.qty}/>
                                 </View>
                                 <View style={{marginTop: 10}}>
                                     <Text style={{ color: 'red', textAlign: 'center', cursor: 'pointer' }} onPress={() => removeFromFavourites(item.product_id)}>Delete</Text>

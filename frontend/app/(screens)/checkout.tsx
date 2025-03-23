@@ -80,6 +80,25 @@ const CheckoutScreen: React.FC = () => {
     };
 
     /**
+     * Function to format expiry date with slash
+     * @param text
+     * */
+    const handleExpiryChange = (text) => {
+        if (text.length > 5) return;
+        // Remove any non-numeric characters
+        const cleaned = text.replace(/[^0-9]/g, '');
+
+        // Insert slash after first 2 digits
+        if (cleaned.length >= 2) {
+            const month = cleaned.substring(0, 2);
+            const year = cleaned.substring(2, 4);
+            setExpiry(`${month}/${year}`);
+        } else {
+            setExpiry(cleaned);
+        }
+    };
+
+    /**
      * Updated handlePayNow function for your CheckoutScreen
      * */
     const handlePayNow = async () => {
@@ -273,7 +292,7 @@ const CheckoutScreen: React.FC = () => {
                                     style={styles.input}
                                     keyboardType="numeric"
                                     value={expiry}
-                                    onChangeText={setExpiry}
+                                    onChangeText={handleExpiryChange}
                                     maxLength={5}
                                 />
                             </View>

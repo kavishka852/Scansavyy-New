@@ -37,7 +37,7 @@ class ProductSimilarityModel:
                 shop = await Shop.find({"_id": product['shop_id']})
                 product["shop_name"] = shop["name"]
 
-                if query_product.category == product['category']:
+                if query_product.category == product['category'] and query_product.brand == product['brand']:
                     similar_products.append({
                         'product': product,
                         'similarity_score': float(score),

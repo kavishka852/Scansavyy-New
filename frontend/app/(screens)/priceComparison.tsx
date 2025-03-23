@@ -13,6 +13,7 @@ import {FontAwesome} from "@expo/vector-icons";
 import {useAuthorization} from "@/hooks/useAuthorization";
 import HttpService from "@/utils/httpService";
 import Loading from "@/components/Loading";
+import ProductStock from "@/components/ProductStock";
 
 const PriceComparison = () => {
     const {checkAccess} = useAuthorization();
@@ -71,6 +72,9 @@ const PriceComparison = () => {
 
             if (response.data.success) {
                 setRelatedProducts(response.data.data);
+                if (response.data.data.length === 0) {
+                    Alert.alert('No Similar Products', 'No similar products found for the scanned product.');
+                }
             }
         } catch (error) {
             Alert.alert('Error', 'Unable to connect to the server. Please try again later.');
@@ -166,8 +170,7 @@ const PriceComparison = () => {
                                         {/* Category and Stock */}
                                         <View style={styles.bottomContainer}>
                                             <Text style={styles.categoryText}>{item.category}</Text>
-                                            <Text
-                                                style={item.qty > 0 ? styles.InStockText : styles.OutOfStockText}>{item.qty > 0 ? "In Stock" : "Out Of Stock"}</Text>
+                                            <ProductStock quantity={item.qty}/>
                                         </View>
                                     </View>
                                 </View>
@@ -246,7 +249,7 @@ const PriceComparison = () => {
                                         {/* Category and Stock */}
                                         <View style={styles.bottomContainer}>
                                             <Text style={styles.categoryText}>{item.category}</Text>
-                                            <Text style={item.qty > 0 ? styles.InStockText : styles.OutOfStockText}>{item.qty > 0 ? "In Stock" : "Out Of Stock"}</Text>
+                                            <ProductStock quantity={item.qty}/>
                                         </View>
                                     </View>
                                 </View>

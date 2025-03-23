@@ -31,10 +31,15 @@ class Profile:
             JSONResponse: Error response or success response.
         """
         try:
+            print(data)
             formatted_data = {
                 "name": data.name,
                 "email": data.email
             }
+            if data.first_login:
+                formatted_data = {
+                    "first_login": data.first_login,
+                }
             # Make the hash password
             if data.password:
                 hashed_password = Authenticate.get_password_hash(data.password)

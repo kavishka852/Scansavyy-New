@@ -1,7 +1,8 @@
 import React, {useRef} from 'react';
-import {SafeAreaView, StyleSheet, AppState, Platform, StatusBar, View} from "react-native";
+import {SafeAreaView, StyleSheet, AppState, Platform, StatusBar, View, TouchableOpacity} from "react-native";
 import {Stack, useRouter} from "expo-router";
 import {CameraView} from "expo-camera";
+import {FontAwesome5} from "@expo/vector-icons";
 
 const QrCodeScan = () => {
     const router = useRouter();
@@ -31,6 +32,19 @@ const QrCodeScan = () => {
             <View style={styles.overlay}>
                 <View style={styles.scanBox} />
             </View>
+            <TouchableOpacity style={{
+                position: 'absolute',
+                bottom: 80,
+                left: '50%',
+                transform: [{translateX: -40}],
+                width: 80,
+                height: 80,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+            }} onPress={() => router.push('/(screens)/(tabs)')}>
+                <FontAwesome5 name="arrow-left" size={30} color="#ffffff"/>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 };

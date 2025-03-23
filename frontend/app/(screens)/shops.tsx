@@ -16,6 +16,7 @@ import Loading from "@/components/Loading";
 import {getSecureItem, SECURE_STORAGE_KEYS} from "@/utils/secureStoreUtils";
 
 const Shops = () => {
+    const {shop} = useLocalSearchParams();
     const {checkAccess} = useAuthorization();
     const [shopLoading, setShopLoading] = useState<boolean>(true);
     const [shops, setShops] = useState<any>([]);
@@ -35,9 +36,12 @@ const Shops = () => {
      * */
     const fetchData = async () => {
         try {
+            let url = '/api/shops';
+            if (shop) {
+                url += `?name=${shop}`;
+            }
             // Retrieve the shops
-            const response = await HttpService.get('/api/shops');
-            console.log(response.data.data)
+            const response = await HttpService.get(url);
             if (response.data.success) {
                 setShops(response.data.data);
             }
@@ -64,7 +68,7 @@ const Shops = () => {
                             <Loading/>
                         )}
                         {(shops.length === 0 && !shopLoading) && (
-                            <View style={{width: '100%', backgroundColor: '#e8e8e8', borderRadius: 12, marginTop: 0}}>
+                            <View style={{width: '100%', backgroundColor: '#e8e8e8', borderRadius: 12, marginTop: 10}}>
                                 <Text style={{
                                     fontWeight: 'bold',
                                     fontSize: 16,

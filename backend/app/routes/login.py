@@ -51,7 +51,8 @@ class Login:
                     "user_data": {
                         "email": user.email,
                         "username": user.username,
-                        "name": user.name
+                        "name": user.name,
+                        "first_login": user.first_login,
                     }
                 }
             )

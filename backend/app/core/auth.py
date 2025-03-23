@@ -150,6 +150,7 @@ class Authenticate:
                 name=user['name'],
                 email=user['email'],
                 username=user['username'],
+                first_login=user['first_login'],
                 password=user['password'],
             )
         except InvalidTokenError:

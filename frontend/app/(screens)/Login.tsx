@@ -45,9 +45,20 @@ const Login = () => {
                 // Set the user data
                 await setSecureItem(SECURE_STORAGE_KEYS.USER_DATA, data.user_data);
 
+                // Update the user first login status
+                if (!data.user_data.first_login) {
+                    await HttpService.post('/api/profile/update', {
+                        first_login: true,
+                    });
+                }
+
                 Alert.alert('Success', 'User login successful');
 
                 setTimeout(() => {
+                    if (!data.user_data.first_login) {
+                        router.push('/(screens)/Onboarding');
+                        return;
+                    }
                     // Navigate to the main app
                     router.push('/(screens)/(tabs)');
                     return;
@@ -258,7 +269,8 @@ const styles = StyleSheet.create({
 type UserData = {
     email: string,
     username: string,
-    name: string
+    name: string,
+    first_login: boolean,
 }
 
 type LoginData = {

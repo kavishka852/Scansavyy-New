@@ -19,6 +19,7 @@ import {getSecureItem, SECURE_STORAGE_KEYS} from "@/utils/secureStoreUtils";
 import {useAuthorization} from "@/hooks/useAuthorization";
 import {priceFormat} from "@/utils/common";
 import Loading from "@/components/Loading";
+import ProductStock from "@/components/ProductStock";
 
 const {width: screenWidth} = Dimensions.get('window')
 
@@ -27,6 +28,7 @@ const HomeScreens = () => {
     const {checkAccess} = useAuthorization();
     const [products, setProducts] = useState<any>([]);
     const [username, setUsername] = useState<string>("John Doe");
+    const [shopSearch, setShopSearch] = useState<string>("");
 
     /**
      * Initial data load
@@ -48,13 +50,21 @@ const HomeScreens = () => {
             setUsername(user.name);
 
             // Retrieve the product data
-            const response = await HttpService.get('/api/product/list?category=Laptops');
+            const response = await HttpService.get('/api/product/list?category=Laptops&limit=4&min_rating=4');
             if (response.data.success) {
                 setProducts(response.data.data);
             }
         } catch (error) {
             Alert.alert('Error', 'Unable to connect to the server. Please try again later.');
         }
+    }
+
+    /**
+     * Search the shops
+     * */
+    const searchShops = async () => {
+        if (shopSearch == "" || shopSearch == null) return;
+        router.push(`/(screens)/shops?shop=${shopSearch}`);
     }
 
     return (
@@ -75,13 +85,26 @@ const HomeScreens = () => {
                         <Text style={styles.searchTitle}>
                             to try?
                         </Text>
-                        <View style={{paddingVertical: 30, position: 'relative'}}>
-                            <TextInput placeholder='E.g. Nero PC House' style={{
-                                height: 50, paddingRight: 10, paddingVertical: 20,
-                                borderRadius: 7, backgroundColor: '#F0F1F1', paddingLeft: 40
-                            }} placeholderTextColor={'gray'}></TextInput>
-                            <TouchableOpacity style={{position: 'absolute', top: 43, left: 10}}>
-                                <FontAwesome name="map-marker" size={24} color="gray"/>
+                        <View style={{
+                            position: 'relative',
+                            height: 50,
+                            marginTop: 20,
+                            marginBottom: 10,
+                            paddingRight: 10,
+                            paddingVertical: 0,
+                            borderRadius: 7,
+                            backgroundColor: '#F0F1F1',
+                            paddingLeft: 20,
+                            display: 'flex',
+                            alignItems: 'center',
+                            flexDirection: 'row',
+                        }}>
+                            <TextInput placeholder='E.g. Shop One' style={{
+                                width: '80%',
+                                height: 50,
+                            }} placeholderTextColor={'gray'} onChangeText={setShopSearch}></TextInput>
+                            <TouchableOpacity onPress={searchShops} style={{marginLeft: 'auto', marginRight: 5}}>
+                                <FontAwesome name="search" size={24} color="gray"/>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -166,7 +189,7 @@ const HomeScreens = () => {
 
                 {/* list PC */}
 
-                <View style={{width: '100%', paddingHorizontal: 10, marginBottom: 100 }}>
+                <View style={{width: '100%', paddingHorizontal: 10, marginBottom: 100}}>
                     <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10}}>
                         <FontAwesome name="plane" size={30} color="#1E90FF"/>
                         <Text style={{
@@ -208,7 +231,8 @@ const HomeScreens = () => {
                                     {/* Product Details */}
                                     <View style={styles.detailsContainer}>
                                         <View style={styles.bottomContainer}>
-                                            <Text style={[styles.categoryText, {fontWeight: 600}]}>{item.shop_name}</Text>
+                                            <Text
+                                                style={[styles.categoryText, {fontWeight: 600}]}>{item.shop_name}</Text>
                                         </View>
                                         {/* Title */}
                                         <Text numberOfLines={2} style={styles.title}>
@@ -219,7 +243,8 @@ const HomeScreens = () => {
                                         <View style={styles.priceRatingContainer}>
                                             <View style={styles.priceContainer}>
                                                 <Text style={styles.currentPrice}>LKR {priceFormat(item.price)}</Text>
-                                                <Text style={styles.originalPrice}>LKR {priceFormat(item.original_price)}</Text>
+                                                <Text
+                                                    style={styles.originalPrice}>LKR {priceFormat(item.original_price)}</Text>
                                             </View>
 
                                             <View style={styles.ratingContainer}>
@@ -231,7 +256,7 @@ const HomeScreens = () => {
                                         {/* Category and Stock */}
                                         <View style={styles.bottomContainer}>
                                             <Text style={styles.categoryText}>{item.category}</Text>
-                                            <Text style={item.qty > 0 ? styles.InStockText : styles.OutOfStockText}>{item.qty > 0 ? "In Stock" : "Out Of Stock"}</Text>
+                                            <ProductStock quantity={item.qty}/>
                                         </View>
                                     </View>
                                 </View>

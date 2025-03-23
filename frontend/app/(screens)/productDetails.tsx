@@ -1,21 +1,21 @@
-import {View, Text, Image, useWindowDimensions, TouchableOpacity, ScrollView, StyleSheet, Alert} from 'react-native';
-import {useLocalSearchParams} from 'expo-router';
-import React, {useEffect, useState} from 'react';
-import Svg, {Path} from "react-native-svg";
-import {AntDesign, Fontisto, FontAwesome, Ionicons} from '@expo/vector-icons';
+import { View, Text, Image, useWindowDimensions, TouchableOpacity, ScrollView, StyleSheet, Alert } from 'react-native';
+import { useLocalSearchParams } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import Svg, { Path } from "react-native-svg";
+import { AntDesign, Fontisto, FontAwesome, Ionicons } from '@expo/vector-icons';
 import Constants from "expo-constants";
-import {useRouter} from 'expo-router';
+import { useRouter } from 'expo-router';
 import HttpService from "@/utils/httpService";
-import {useAuthorization} from "@/hooks/useAuthorization";
-import {priceFormat} from "@/utils/common";
+import { useAuthorization } from "@/hooks/useAuthorization";
+import { priceFormat } from "@/utils/common";
 import Loading from "@/components/Loading";
 
 const ProductDetailsScreen = () => {
     const router = useRouter();
-    const {checkAccess} = useAuthorization();
-    const {product} = useLocalSearchParams();
+    const { checkAccess } = useAuthorization();
+    const { product } = useLocalSearchParams();
     const [loading, setLoading] = useState<boolean>(false);
-    const {width, height} = useWindowDimensions();
+    const { width, height } = useWindowDimensions();
     const [quantity, setQuantity] = useState(1);
     const [maxQuantity, setMaxQuantity] = useState(1);
     const [productData, setProductData] = useState<any>({
@@ -147,30 +147,30 @@ const ProductDetailsScreen = () => {
     return (
         <View style={styles.container}>
             {loading && (
-                <View style={{marginTop: 50}}>
-                    <Loading/>
+                <View style={{ marginTop: 50 }}>
+                    <Loading />
                 </View>
             )}
             {!loading && (
                 <>
                     <ScrollView style={styles.scrollView}>
                         {/* Header Section */}
-                        <View style={[styles.headerContainer, {height: height / 3 + 80}]}>
+                        <View style={[styles.headerContainer, { height: height / 3 + 80 }]}>
                             {/* Header Buttons */}
                             <View style={styles.headerButtons}>
                                 <TouchableOpacity onPress={() => router.push(`/(screens)/(tabs)`)} style={styles.backButton}>
-                                    <AntDesign name="arrowleft" size={20} color="white"/>
+                                    <AntDesign name="arrowleft" size={20} color="white" />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity onPress={() => addToFavorites()}>
                                     <View style={[styles.wishlistButton, isWishlisted && styles.wishlistedButton]}>
-                                        <Fontisto name="favorite" size={20} color="#fff"/>
+                                        <Fontisto name="favorite" size={20} color="#fff" />
                                     </View>
                                 </TouchableOpacity>
                             </View>
 
                             <Image
-                                source={{uri: productData.images[0]}}
+                                source={{ uri: productData.images[0] }}
                                 style={styles.heroImage}
                             />
 
@@ -191,11 +191,11 @@ const ProductDetailsScreen = () => {
 
                             <View style={styles.statsContainer}>
                                 <View style={styles.statItem}>
-                                    <AntDesign name="star" size={20} color="#eebd06"/>
+                                    <AntDesign name="star" size={20} color="#eebd06" />
                                     <Text style={styles.statText}>{productData.ratings}</Text>
                                 </View>
                                 <View style={styles.statItem}>
-                                    <AntDesign name="eye" size={20} color="#ee5a06"/>
+                                    <AntDesign name="eye" size={20} color="#ee5a06" />
                                     <Text style={styles.statText}>120 Views</Text>
                                 </View>
                             </View>
@@ -256,7 +256,7 @@ const ProductDetailsScreen = () => {
                                             onPress={() => handleQuantityChange(false)}
                                             disabled={quantity <= 1}
                                         >
-                                            <AntDesign name="minus" size={20} color={quantity <= 1 ? "#ccc" : "#000"}/>
+                                            <AntDesign name="minus" size={20} color={quantity <= 1 ? "#ccc" : "#000"} />
                                         </TouchableOpacity>
                                         <Text style={styles.quantityText}>{quantity}</Text>
                                         <TouchableOpacity
@@ -264,7 +264,7 @@ const ProductDetailsScreen = () => {
                                             onPress={() => handleQuantityChange(true)}
                                             disabled={quantity >= maxQuantity}
                                         >
-                                            <AntDesign name="plus" size={20} color={quantity >= maxQuantity ? "#ccc" : "#000"}/>
+                                            <AntDesign name="plus" size={20} color={quantity >= maxQuantity ? "#ccc" : "#000"} />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
@@ -280,24 +280,29 @@ const ProductDetailsScreen = () => {
                             <View style={styles.specSection}>
                                 <Text style={styles.sectionTitle}>Specifications</Text>
                                 <View style={styles.specList}>
-                                    {productData.specifications.map((item: string, index: number) => (
+                                    {/* {productData.specifications.map((item: string, index: number) => (
                                         <Text key={`specifications-${index}`} style={styles.specText}>• {item}</Text>
+                                    ))} */}
+                                    {productData.specifications.map((item, index) => (
+                                        <Text key={`specifications-${index}`} style={styles.specText}>
+                                            • {typeof item === 'object' ? `${item.key}: ${item.value}` : item}
+                                        </Text>
                                     ))}
                                 </View>
                             </View>
 
                             {/* Gallery */}
-                            <View style={{paddingTop: 10}}>
+                            <View style={{ paddingTop: 10 }}>
                                 <Text style={{
                                     fontWeight: '500',
                                     fontSize: 25,
                                     color: '#2e2e2e',
                                     paddingBottom: 10
                                 }}>Gallery</Text>
-                                <View style={{flexDirection: 'row', gap: 10, marginTop: 5}}>
+                                <View style={{ flexDirection: 'row', gap: 10, marginTop: 5 }}>
                                     {productData.images.map((image: string, index: number) => (
                                         <TouchableOpacity key={`product-image-${index}`}>
-                                            <Image source={{uri: image}} style={{width: 80, height: 80, borderRadius: 15}}/>
+                                            <Image source={{ uri: image }} style={{ width: 80, height: 80, borderRadius: 15 }} />
                                         </TouchableOpacity>
                                     ))}
                                 </View>
@@ -310,11 +315,11 @@ const ProductDetailsScreen = () => {
                         <View style={styles.footer}>
                             <View style={styles.footerContent}>
                                 <TouchableOpacity onPress={() => addToCart("cart")} style={styles.cartButton}>
-                                    <Ionicons name="cart-outline" size={24} color="white"/>
+                                    <Ionicons name="cart-outline" size={24} color="white" />
                                     <Text style={styles.buttonText}>Add to Cart</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.buyButton}>
-                                    <FontAwesome name="send" size={24} color="white"/>
+                                    <FontAwesome name="send" size={24} color="white" />
                                     <Text style={styles.buttonText} onPress={() => addToCart("checkout")}>Buy
                                         Now</Text>
                                 </TouchableOpacity>

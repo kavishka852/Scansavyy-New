@@ -8,7 +8,7 @@ class UserSchema(BaseModel):
     name: str
     email: str
     password: str
-    first_login: bool
+    first_login: Optional[bool] = False
     username: Optional[str] = None
     verified: Optional[bool] = None
     status: Optional[int] = None

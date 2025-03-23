@@ -55,7 +55,8 @@ class Register:
                 "status": UserEnum.ACTIVE,
                 "verified": True,
                 "created_at": date_time_now,
-                "updated_at": date_time_now
+                "updated_at": date_time_now,
+                "first_login": False
             }
 
             # Insert the user data into the collection

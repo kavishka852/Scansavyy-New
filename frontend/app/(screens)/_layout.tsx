@@ -25,7 +25,7 @@ const RootLayout = () => {
             <Stack.Screen name="purchaseDetails" options={{headerShown: false}}/>
             <Stack.Screen name="priceComparison" options={{headerShown: true, title: "Price Comparison"}}/>
             <Stack.Screen name="imageRecognition" options={{headerShown: true, title: "Image Recognition"}}/>
-            <Stack.Screen name="relatedProducts" options={{headerShown: true, title: "Related Products"}}/>
+            <Stack.Screen name="relatedProducts" options={{headerShown: true, title: "Image Recognition Related Products"}}/>
             <Stack.Screen name="shopDetails" options={{headerShown: true, title: "Shop Details"}}/>
             <Stack.Screen name="shops" options={{headerShown: true, title: "Shops"}}/>
         </Stack>

@@ -27,4 +27,4 @@ def generate_qr_console(data: str):
 
 
 # Example usage
-generate_qr_console("67bb20e3c880a684a22888e8")
+generate_qr_console("67bf6b1e3021a050367ad776")

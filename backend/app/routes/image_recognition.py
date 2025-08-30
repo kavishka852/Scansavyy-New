@@ -114,7 +114,7 @@ def predict_object(image_tensor):
 
 def predict_brand(img):
     try:
-        known_laptop_brands = ["Apple", "Dell", "HP", "Lenovo", "Acer", "Asus", "MSI", "Samsung"]
+        known_laptop_brands = ["Apple", "Dell", "HP", "Lenovo", "Acer", "Asus", "MSI", "Samsung", "Intel","LogiLink"]
         brand = "Unknown"
 
         result = ocr.ocr(img, cls=True)
@@ -150,6 +150,7 @@ def map_object_to_category(object_name):
         "cellular telephone, cellular phone, cellphone, cell, mobile phone": "Smartphones",
         "joystick": "Gaming Accessories",
         "game controller": "Gaming Accessories",
+        "computer keyboard, keypad": "Keyboard",
     }
 
     # Check for keywords in the object name

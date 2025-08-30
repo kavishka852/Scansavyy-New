@@ -257,7 +257,7 @@ const PriceComparison = () => {
                         ))}
                     </View>
                     <TouchableOpacity style={[styles.clearButton, relatedProducts.length && {marginTop: 30}]} onPress={priceComparison}>
-                        <Text style={styles.clearButtonText}>Find Similar Products</Text>
+                        <Text style={styles.clearButtonText}>Find Similar & Low Price Products</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

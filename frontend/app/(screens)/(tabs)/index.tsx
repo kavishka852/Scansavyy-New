@@ -11,7 +11,7 @@ import {
     Alert
 } from 'react-native'
 import React, {useEffect, useState} from 'react'
-import {FontAwesome5, FontAwesome} from '@expo/vector-icons';
+import {FontAwesome5, FontAwesome, MaterialIcons, Ionicons, Entypo, AntDesign, Feather} from '@expo/vector-icons';
 import {useRouter} from 'expo-router';
 import DiscountBanner from '@/components/Scansavy_Prop/discount';
 import HttpService from "@/utils/httpService";
@@ -110,7 +110,7 @@ const HomeScreens = () => {
                     </View>
                 </View>
 
-                {/* category */}
+                {/* Our Services */}
                 <View style={{width: '100%', padding: 20}}>
                     {/* Title */}
                     <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 20}}>
@@ -126,34 +126,107 @@ const HomeScreens = () => {
                         justifyContent: 'space-between'
                     }}>
                         {[
+                            {
+                                icon: <FontAwesome5 name="chart-line" size={28} color="#1E90FF"/>,
+                                label: 'Price Compare'
+                            },
+                            {
+                                icon: <MaterialIcons name="search" size={28} color="#1E90FF"/>,
+                                label: 'Shop Search'
+                            },
+                            {
+                                icon: <MaterialIcons name="timer" size={28} color="#1E90FF"/>,
+                                label: 'Fast Shopping'
+                            },
+                            {
+                                icon: <Ionicons name="wallet-outline" size={28} color="#1E90FF"/>,
+                                label: 'Cash On Hand'
+                            },
+                            {
+                                icon: <FontAwesome name="bell" size={28} color="#1E90FF"/>,
+                                label: 'Price Drop News'
+                            },
+                            {
+                                icon: <Entypo name="shield" size={28} color="#1E90FF"/>,
+                                label: 'Buyer Protection'
+                            },
+                            {
+                                icon: <MaterialIcons name="local-offer" size={28} color="#1E90FF"/>,
+                                label: 'Daily Offers'
+                            },
+                            {
+                                icon: <FontAwesome5 name="headset" size={26} color="#1E90FF"/>,
+                                label: '24/7 Support'
+                            },
+                        ].map((item, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                style={{
+                                    width: '25%',
+                                    alignItems: 'center',
+                                    marginBottom: 20,
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width: 50,
+                                        height: 50,
+                                        borderRadius: 10,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        borderWidth: 1,
+                                        borderColor: '#EBEBEB',
+                                    }}
+                                >
+                                    {item.icon}
+                                </View>
+                                <Text
+                                    style={{
+                                        textAlign: 'center',
+                                        marginTop: 10,
+                                        color: '#000',
+                                        fontFamily: 'Montserrat',
+                                        fontSize: 12,
+                                    }}
+                                >
+                                    {item.label}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </View>
+
+                {/* New Features */}
+                <View style={{width: '100%', padding: 20}}>
+                    {/* Title */}
+                    <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 20}}>
+                        <FontAwesome5 name="lightbulb" size={20} color="#1E90FF"/>
+                        <Text style={{fontWeight: 'bold', fontSize: 16, paddingLeft: 10}}>New Features</Text>
+                    </View>
+
+                    {/* Icons and Text */}
+                    <View style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        flexWrap: 'wrap',
+                        justifyContent: 'space-between'
+                    }}>
+                        {[
                             {icon: <FontAwesome name="qrcode" size={30} color="#1E90FF"/>, label: 'Smart QR Scanner'},
                             {
                                 icon: <FontAwesome name="camera" size={30} color="#1E90FF"/>,
-                                label: 'Instant Image Capture'
-                            },
-                            {
-                                icon: <FontAwesome5 name="bell" size={30} color="#1E90FF"/>,
-                                label: 'Stock Release Alerts'
-                            },
-                            {icon: <FontAwesome name="heart" size={30} color="#1E90FF"/>, label: 'Recommend Alerts'},
-                            {
-                                icon: <FontAwesome name="gift" size={30} color="#1E90FF"/>,
-                                label: 'Exclusive Deals Today'
-                            },
-                            {
-                                icon: <FontAwesome name="shopping-cart" size={30} color="#1E90FF"/>,
-                                label: 'Pick your item'
+                                label: 'Image Scan'
                             },
                         ].map((item, index) => (
                             <TouchableOpacity
                                 key={index}
                                 onPress={() => {
-                                    if (item.label == 'Instant Image Capture') {
+                                    if (item.label == 'Image Scan') {
                                         router.push('/(screens)/imageRecognition');
                                     }
                                 }}
                                 style={{
-                                    width: '30%',
+                                    width: '50%',
                                     alignItems: 'center',
                                     marginBottom: 20,
                                 }}
@@ -188,17 +261,16 @@ const HomeScreens = () => {
                 </View>
 
                 {/* list PC */}
-
                 <View style={{width: '100%', paddingHorizontal: 10, marginBottom: 100}}>
                     <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10}}>
-                        <FontAwesome name="plane" size={30} color="#1E90FF"/>
+                        <FontAwesome name="fire" size={30} color="orange" />
                         <Text style={{
                             fontWeight: 'bold',
                             fontSize: 16,
                             paddingVertical: 20,
                             paddingLeft: 10,
                             textTransform: 'capitalize'
-                        }}>PC 2024 (hot)</Text>
+                        }}>Popular Products 2025</Text>
                     </View>
                     <View style={{
                         width: '100%',
